@@ -2,7 +2,7 @@ use v6;
 
 use Test;
 
-plan 32;
+plan 33;
 
 # L<S12/"Multisubs and Multimethods">
 # L<S12/"Trusts">
@@ -147,6 +147,8 @@ is Bar.new.a("not an Int"), 'Any-method in Foo';
     ok @candies[0] ~~ Method, 'candidate 0 is a method';
     ok @candies[1] ~~ Method, 'candidate 1 is a method';
     ok @candies[2] ~~ Method, 'candidate 2 is a method';
+
+    ok $routine.multi, '.multi should be true for multi dispatch routines';
 }
 
 {
