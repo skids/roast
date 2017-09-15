@@ -7,6 +7,63 @@ use Test::Assuming;
 
 plan 229;
 
+#?rakudo todo 'WhateverCode is Callable and should have assuming'
+{
+
+my &w1 = -*;
+my &w2 = *-*;
+my &w3 = *-*/*;
+
+# These are for verifying the tests before WhateverCode.assuming works
+#&w1 = sub ($wc_param_16) { -$wc_param_16 };
+#&w2 = sub ($wc_param_18, $wc_param_19) { $wc_param_18-$wc_param_19 };
+#&w3 = sub ($wc_param_20, $wc_param_21, $wc_param_22) { $wc_param_20-$wc_param_21/$wc_param_22 };
+
+my @p;
+my &jc;
+lives-ok {&jc = &join.assuming(",")}, "Can &join.assuming";
+is-primed-sig(&w1, &w1.signature, );
+is-primed-sig(&w1, &w1.signature, *);
+is-primed-sig(&w1, :(), 1);
+@p := (.name for &w2.signature.params);
+is-primed-sig(&w2, &w2.signature, );
+is-primed-sig(&w2, &w2.signature, *);
+is-primed-sig(&w2, EVAL(":(@p[1])"), 1);
+is-primed-sig(&w2, :(), 1, 2);
+is-primed-sig(&w2, EVAL(":(@p[0])"), *, 2);
+is-primed-sig(&w2, EVAL(":(@p[1])"), 1, *);
+@p := (.name for &w3.signature.params);
+is-primed-sig(&w3, &w3.signature, );
+is-primed-sig(&w3, &w3.signature, *);
+is-primed-sig(&w3, EVAL(":({jc(@p[1,2])})"), 1);
+is-primed-sig(&w3, EVAL(":(@p[2])"), 1, 2);
+is-primed-sig(&w3, EVAL(":({jc(@p[0,2])})"), *, 2);
+is-primed-sig(&w3, EVAL(":({jc(@p[1,2])})"), 1, *);
+is-primed-sig(&w3, &w3.signature, *, *);
+is-primed-sig(&w3, :(), 1, 2, 3);
+is-primed-sig(&w3, EVAL(":(@p[0])"), *, 2, 3);
+is-primed-sig(&w3, EVAL(":(@p[1])"), 1, *, 3);
+is-primed-sig(&w3, EVAL(":(@p[2])"), 1, 2, *);
+is-primed-sig(&w3, EVAL(":({jc(@p[0,1])})"), *, *, 3);
+is-primed-sig(&w3, EVAL(":({jc(@p[0,2])})"), *, 2, *);
+is-primed-sig(&w3, EVAL(":({jc(@p[1,2])})"), 1, *, *);
+is-primed-sig(&w3, &w3.signature, *, *, *);
+
+priming-fails-bind-ok(&w1, "", "Too many positionals", 1, 2);
+priming-fails-bind-ok(&w2, "", "Too many positionals", 1, 2, 3);
+priming-fails-bind-ok(&w3, "", "Too many positionals", 1, 2, 3, 4);
+
+is-primed-call(&w1, \(42), $[-42],);
+is-primed-call(&w1, \(), $[-42], 42);
+is-primed-call(&w2, \(42), $[1], 43);
+is-primed-call(&w2, \(42), $[-1], *, 43);
+is-primed-call(&w3, \(1), $[2 - 1/42], 2, *, 42);
+
+}
+
+exit;
+
+
 is-primed-sig(sub () { }, :(), );
 is-primed-sig(sub ($a) { }, :(), 1);
 is-primed-sig(sub ($a, $b) { }, :($b), 1);
@@ -253,6 +310,9 @@ is-primed-call(&testsubproto, \(43), $["Int + 43"], 42);
 is-primed-call(&testsubproto, \(44), $["Str + 44"], "a Str");
 is-primed-call(&atan2, \(2), $[atan2(1,2)],1);
 is-primed-call(&atan2, \(1), $[atan2(1,2)],*,2);
+
+
+
 
 # RT#126332
 is-primed-call(&substr, \(0,2), $[substr("hello world", 0, 2)], "hello world");
