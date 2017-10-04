@@ -5,7 +5,7 @@ use lib "t/spec/packages";
 use Test;
 use Test::Util;
 
-plan 431;
+plan 435;
 
 throws-like '42 +', Exception, "missing rhs of infix", message => rx/term/;
 
@@ -214,6 +214,13 @@ for '$#' {
 throws-like '$#foo', X::Obsolete;
 # RT #122645
 lives-ok { EVAL '$@' }, '$@ is no longer a problem';
+
+# RT #131478
+eval-lives-ok 'class rt131478_s { method foo { $.^name } }; die unless rt131478_s.new.foo ~~ Str', '$.^metamethod call does not trigger Perl5Var check (and works)';
+eval-lives-ok 'class rt131478_a { method foo { @.^parents(:all) } }; die unless rt131478_a.new.foo[1]:exists', '@.^metamethod call does not trigger Perl5Var check (and works)';
+# XXX assumes we never forbid non-strings or coerce :auth extended identifier here.
+eval-lives-ok 'class rt131478_h:auth(:foo) { method foo { %.^auth } };  die unless rt131478_h.new.foo<foo>:exists', '%.^metamethod call does not trigger Perl5Var check (and works)';
+eval-lives-ok 'class rt131478_c { method foo { &.^find_method("foo") } }; die unless rt131478_c.new.foo ~~ Callable:D', '&.^metamethod call does not trigger Perl5Var check (and works)';
 
 # RT #123884
 throws-like '$\\ = 1;', X::Syntax::Perl5Var, message => /'.nl-out'/, "Error message for \$\\ mentions .nl-out";
