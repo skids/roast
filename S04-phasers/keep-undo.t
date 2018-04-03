@@ -5,7 +5,7 @@ use lib $?FILE.IO.parent(2).add("packages");
 use Test;
 use Test::Util;
 
-plan 16;
+plan 24;
 
 # L<S04/Phasers/KEEP "at every successful block exit">
 # L<S04/Phasers/UNDO "at every unsuccessful block exit">
@@ -113,5 +113,57 @@ plan 16;
     ok $undone_sub, 'UNDO in sub fires after "fail"';
 }
 
+# RT #125488
+{
+  # rakudo todo "KEEP topicalizes block result";
+  {
+    my @a = [];
+    { KEEP { @a.push($_) }; 42  };
+    is @a, [ 42 ], "KEEP topicalizes block result";
+  }
+  # rakudo todo "KEEP topicalizes (methodcall) block result";
+  {
+    my @a = [];
+    { KEEP { @a.push($_) }; 42.Int };
+    is @a, [ 42 ], "KEEP topicalizes (methodcall) block result";
+  }
+  # rakudo todo "KEEP topicalizes (last statement) block result";
+  {
+    my @a = [];
+    { KEEP { @a.push($_) }; @a.push(43); 42 };
+    is @a, [ 43, 42 ], "KEEP topicalizes (last statement) block result";
+  }
+  # rakudo todo "KEEP topicalizes (last statement methodcall) block result";
+  {
+    my @a = [];
+    { KEEP { @a.push($_) }; @a.push(43); 42.Int };
+    is @a, [ 43, 42 ], "KEEP topicalizes (last statement methodcall) block result";
+  }
+
+  # rakudo todo "KEEP topicalizes block result in if";
+  {
+    my @a = [];
+    if 1 { KEEP { @a.push($_) }; 42  };
+    is @a, [ 42 ], "KEEP topicalizes block result in if";
+  }
+  # rakudo todo "KEEP topicalizes (methodcall) block result in if";
+  {
+    my @a = [];
+    if 1 { KEEP { @a.push($_) }; 42.Int };
+    is @a, [ 42 ], "KEEP topicalizes (methodcall) block result in if";
+  }
+  # rakudo todo "KEEP topicalizes (last statement) block result in if";
+  {
+    my @a = [];
+    if 1 { KEEP { @a.push($_) }; @a.push(43); 42 };
+    is @a, [ 43, 42 ], "KEEP topicalizes (last statement) block result in if";
+  }
+  # rakudo todo "KEEP topicalizes (last statement methodcall) block result in if";
+  {
+    my @a = [];
+    if 1 { KEEP { @a.push($_) }; @a.push(43); 42.Int };
+    is @a, [ 43, 42 ], "KEEP topicalizes (last statement methodcall) block result in if";
+  }
+}
 
 # vim: ft=perl6

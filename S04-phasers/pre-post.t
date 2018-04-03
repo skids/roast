@@ -6,7 +6,7 @@ use Test;
 # L<S04/Phasers/"assert precondition at every block ">
 # L<S06/Subroutine traits/PRE/POST>
 
-plan 22;
+plan 30;
 
 sub foo(Int $i) {
     PRE {
@@ -185,6 +185,54 @@ throws-like '$pt.test(1)',
     is blockless(4), 4, 'blockless PRE/POST (+)';
     dies-ok  { blockless -4 }, 'blockless PRE/POST (-, 1)';
     dies-ok  { blockless 14 }, 'blockless PRE/POST (-, 2)';
+}
+
+# RT #125488
+{
+  {
+    my @a = [];
+    { POST { @a.push($_) }; 42  };
+    is @a, [ 42 ], "POST topicalizes block result";
+  }
+  {
+    # rakudo todo "POST topicalizes (methodcall) block result";
+    my @a = [];
+    { POST { @a.push($_) }; 42.Int };
+    is @a, [ 42 ], "POST topicalizes (methodcall) block result";
+  }
+  {
+    my @a = [];
+    { POST { @a.push($_) }; @a.push(43); 42 };
+    is @a, [ 43, 42 ], "POST topicalizes (last statement) block result";
+  }
+  {
+    # rakudo todo "POST topicalizes (last statement methodcall) block result";
+    my @a = [];
+    { POST { @a.push($_) }; @a.push(43); 42.Int };
+    is @a, [ 43, 42 ], "POST topicalizes (last statement methodcall) block result";
+  }
+  {
+    my @a = [];
+    if 1 { POST { @a.push($_) }; 42  };
+    is @a, [ 42 ], "POST topicalizes block result in if";
+  }
+  {
+    # rakudo todo "POST topicalizes (methodcall) block result in if";
+    my @a = [];
+    if 1 { POST { @a.push($_) }; 42.Int };
+    is @a, [ 42 ], "POST topicalizes (methodcall) block result in if";
+  }
+  {
+    my @a = [];
+    if 1 { POST { @a.push($_) }; @a.push(43); 42 };
+    is @a, [ 43, 42 ], "POST topicalizes (last statement) block result in if";
+  }
+  {
+    # rakudo todo "POST topicalizes (last statement methodcall) block result in if";
+    my @a = [];
+    if 1 { POST { @a.push($_) }; @a.push(43); 42.Int };
+    is @a, [ 43, 42 ], "POST topicalizes (last statement methodcall) block result in if";
+  }
 }
 
 # vim: ft=perl6
