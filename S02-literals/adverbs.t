@@ -1,7 +1,7 @@
 use v6;
 use Test;
 
-plan 85;
+plan 86;
 
 # L<S02/Adverbial Pair forms>
 
@@ -132,4 +132,9 @@ is [:e(42, 43) :c{"foo" => 42} :d["foo"], :g["foo", "bar"]; :f<foo> ; :i<foo bar
     is-deeply (:99999999999999999999999dd),
               (dd => 99999999999999999999999),
               "Large numeric adverbs don't error out, and also give the correct value";
+}
+
+# RT #127023
+{
+    is (:w :h<1>), (w => True, h => val("1")), 'IntStr adverb value in colonlist';
 }

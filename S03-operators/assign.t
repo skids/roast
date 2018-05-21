@@ -6,7 +6,7 @@ use Test;
 #                      V
 # L<S03/Changes to Perl 5 operators/list assignment operator now parses on the right>
 
-plan 301;
+plan 302;
 
 
 # tests various assignment styles
@@ -973,6 +973,11 @@ sub l () { 1, 2 };
     my $a; $a -= 2;
     is-deeply $a, -2, '-= with :U target gives right result';
     throws-like ｢my $b; $b %= 2｣, Exception, '%= with :U target throws';
+}
+
+# R #1500
+{
+    use Test; my Pair $p; is-deeply ($p .= new :key<foo> :value<bar>), :foo<bar>.Pair, 'fake-infix adverbs on a construct inside args to another routine'
 }
 
 # vim: ft=perl6

@@ -2,7 +2,7 @@ use v6;
 
 use Test;
 
-plan 18;
+plan 19;
 
 {
     class EnumClass     { enum C <a b c> }
@@ -74,6 +74,12 @@ plan 18;
 {
     enum RT<R T>;
     ok R.ACCEPTS(RT), 'enum member ACCEPTS the enum type object';
+}
+
+# RT #127267
+{
+    enum Side ( :Left<left> :Right<right> );
+    is Side.enums.elems, 2, 'colonlist in enum definition';
 }
 
 # vim: ft=perl6

@@ -2,7 +2,7 @@ use v6;
 
 use Test;
 
-plan 4 * 19 + 109;
+plan 4 * 19 + 110;
 
 # L<S02/Mutable types/A single key-to-value association>
 # basic Pair
@@ -484,4 +484,10 @@ subtest 'Clone of Pair does not share .WHICH' => {
     cmp-ok $clone.WHICH, &[!===], $p.WHICH, 'clone, different value';
 }
 
+# RT #126209
+{
+    my @z = (^3).map: {$_};
+    my $x = { :a(1) :b(@z) };
+    is $x, { :a(1), :b[0,1,2] }, "colonlist with array variable and hash constructor in scalar assignment";
+}
 # vim: ft=perl6
