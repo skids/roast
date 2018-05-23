@@ -64,7 +64,7 @@ plan 86;
 # These tests are not exaustive, due to the sheer combinatorics involved.
 # Hopefully they are diverse enough to catch a lot of possible issues.
 
-is {:b, :a(42)}, {:b, :a(42)}, '{:b, :a(42)} is same with all commas';
+is {:b :a(42)}, {:b, :a(42)}, '{:b, :a(42)} is same with all commas';
 is {:e(42, 43), :c{"foo" => 42}:d["foo"]}, {:e(42, 43), :c{"foo" => 42}, :d["foo"]}, '{:e(42, 43), :c{"foo" => 42}:d["foo"]} is same with all commas';
 is {:g["foo", "bar"], :f<foo> :i<foo bar> :j}, {:g["foo", "bar"], :f<foo> , :i<foo bar> , :j}, '{:g["foo", "bar"], :f<foo> :i<foo bar> :j} is same with all commas';
 is {:h(42) :k(42, 43)}, {:h(42) , :k(42, 43)}, '{:h(42) :k(42, 43)} is same with all commas';
@@ -77,7 +77,7 @@ is {:k :b(42) :a(42, 43), :e{"foo" => 42}:c["foo"] :d["foo", "bar"]}, {:k , :b(4
 is {:g<foo> :f<foo bar>, :i:j(42), :h(42, 43)}, {:g<foo> , :f<foo bar>, :i, :j(42), :h(42, 43)}, '{:g<foo> :f<foo bar>, :i:j(42), :h(42, 43)} is same with all commas';
 is {:k{"foo" => 42}:b["foo"], :a["foo", "bar"] :e<foo>, :c<foo bar> :d}, {:k{"foo" => 42}, :b["foo"], :a["foo", "bar"] , :e<foo>, :c<foo bar> , :d}, '{:k{"foo" => 42}:b["foo"], :a["foo", "bar"] :e<foo>, :c<foo bar> :d} is same with all commas';
 is {:g(42) :f(42, 43), :i{"foo" => 42} :j["foo"], :h["foo", "bar"]:k<foo> :b<foo bar>}, {:g(42) , :f(42, 43), :i{"foo" => 42} , :j["foo"], :h["foo", "bar"], :k<foo> , :b<foo bar>}, '{:g(42) :f(42, 43), :i{"foo" => 42} :j["foo"], :h["foo", "bar"]:k<foo> :b<foo bar>} is same with all commas';
-is (:c{"foo" => 42}, :d["foo"]), (:c{"foo" => 42}, :d["foo"]), '(:c{"foo" => 42}, :d["foo"]) is same with all commas';
+is (:c{"foo" => 42} :d["foo"]), (:c{"foo" => 42}, :d["foo"]), '(:c{"foo" => 42}, :d["foo"]) is same with all commas';
 is (:g["foo", "bar"], :f<foo>:i<foo bar>), (:g["foo", "bar"], :f<foo>, :i<foo bar>), '(:g["foo", "bar"], :f<foo>:i<foo bar>) is same with all commas';
 is (:j, :h(42) :k(42, 43) :b{"foo" => 42}), (:j, :h(42) , :k(42, 43) , :b{"foo" => 42}), '(:j, :h(42) :k(42, 43) :b{"foo" => 42}) is same with all commas';
 is (:a["foo"] :e["foo", "bar"]), (:a["foo"] , :e["foo", "bar"]), '(:a["foo"] :e["foo", "bar"]) is same with all commas';
@@ -96,7 +96,7 @@ is (:c["foo", "bar"] :d<foo>, :g<foo bar> :f :i(42); :j(42, 43), :h{"foo" => 42}
 is (:k["foo"]; :b["foo", "bar"] :a<foo>, :e<foo bar>), (:k["foo"]; :b["foo", "bar"] , :a<foo>, :e<foo bar>), '(:k["foo"]; :b["foo", "bar"] :a<foo>, :e<foo bar>) is same with all commas';
 is (:c :d(42), :g(42, 43); :f{"foo" => 42} :i["foo"], :j["foo", "bar"] :h<foo>), (:c , :d(42), :g(42, 43); :f{"foo" => 42} , :i["foo"], :j["foo", "bar"] , :h<foo>), '(:c :d(42), :g(42, 43); :f{"foo" => 42} :i["foo"], :j["foo", "bar"] :h<foo>) is same with all commas';
 is (:k<foo bar> :b :a(42), :e(42, 43); :c{"foo" => 42} ; :d["foo"] :g["foo", "bar"]), (:k<foo bar> , :b , :a(42), :e(42, 43); :c{"foo" => 42} ; :d["foo"] , :g["foo", "bar"]), '(:k<foo bar> :b :a(42), :e(42, 43); :c{"foo" => 42} ; :d["foo"] :g["foo", "bar"]) is same with all commas';
-is [:f<foo>, :i<foo bar>], [:f<foo>, :i<foo bar>], '[:f<foo>, :i<foo bar>] is same with all commas';
+is [:f<foo> :i<foo bar>], [:f<foo>, :i<foo bar>], '[:f<foo>, :i<foo bar>] is same with all commas';
 is [:j, :h(42):k(42, 43)], [:j, :h(42), :k(42, 43)], '[:j, :h(42):k(42, 43)] is same with all commas';
 is [:b{"foo" => 42}, :a["foo"] :e["foo", "bar"] :c<foo>], [:b{"foo" => 42}, :a["foo"] , :e["foo", "bar"] , :c<foo>], '[:b{"foo" => 42}, :a["foo"] :e["foo", "bar"] :c<foo>] is same with all commas';
 is [:d<foo bar> :g], [:d<foo bar> , :g], '[:d<foo bar> :g] is same with all commas';
