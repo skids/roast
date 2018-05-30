@@ -1,7 +1,7 @@
 use v6;
 use Test;
 
-plan 21;
+plan 22;
 
 # L<S06/Closure parameters>
 
@@ -94,6 +94,18 @@ subtest 'can use signature unpacking with anonymous parameters' => {
     is -> &:(Str), 42 {100}(-> Str $v { $v.uc }, 42), 100,
         'can call with right signature';
     throws-like '-> &:(Int) {}({;})', X::TypeCheck::Binding::Parameter,
+        'typcheck correctly fails with wrong arg';
+}
+
+# RT #132209
+subtest 'can use signature with &-sigiled named parameters' => {
+    plan 2;
+    my $res = 0;
+    sub x (:$param) { $param + 1 };
+    sub x2 ($, :$param) { $param + 1 };
+    sub c (:&funk:(:$param)) { funk :41param };
+    is c(:funk(&x)), 42, 'can call with right signature';
+    throws-like 'c(:funk(&x2))', X::TypeCheck::Binding::Parameter,
         'typcheck correctly fails with wrong arg';
 }
 # vim: ft=perl6
